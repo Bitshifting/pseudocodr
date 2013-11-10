@@ -38,13 +38,13 @@ function initEverything() {
         
         context.font = "14px Courier New";
         
-        /*var canvas = document.querySelector('canvas');
+        var canvas = document.querySelector('canvas');
         canvas.style.width ='100%';
         canvas.style.height='100%';
         // ...then set the internal size to match
         canvas.width  = canvas.offsetWidth;
         canvas.height = canvas.offsetHeight;
-*/
+
         //Determine width and height for local use.
         canvasWidth = element.getAttribute('width');
         canvasHeight = element.getAttribute('height');
