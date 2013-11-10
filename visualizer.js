@@ -282,22 +282,22 @@ function colorLookupBrite(type) {
 
 function colorLookupMute(type) {
     if (type === "if") {
-        return "#3B1E1E";
+        return "#241717";
     }
     if (type === "instructions") {
-        return "#4D4C2F";
+        return "#303024";
     }
     if (type === "file") {
         return "#222";
     }
     if (type === "function") {
-        return "#49354A";
+        return "#231F24";
     }
     if (type === "loop") {
-        return "#2D402D";
+        return "#262E26";
     }
     if (type === "object") {
-        return "#333D47";
+        return "#1A1C1F";
     }
     return "#d00";
 }
