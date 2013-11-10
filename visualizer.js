@@ -33,6 +33,8 @@ function initEverything() {
 
     if (element.getContext) {
         context = element.getContext('2d');
+        
+        context.font = "12px Courier New";
 
         //Determine width and height for local use.
         canvasWidth = element.getAttribute('width');
@@ -132,7 +134,7 @@ function setRootNode(rootnode) {
  */
 function thereWasANodeUpdate() {
      //Calculate node positions...
-     calculateNodeSizesAndPositions(rootN);
+     calculateNodeSizesAndPositions(rootN, 1);
     //and rewdraw everything!
     repaint();
 }
@@ -140,8 +142,9 @@ function thereWasANodeUpdate() {
 var CHILD_INDENT = 24;
 var INTERNODE_SPACING = 12;
 var FONT_SIZE = 12;
+var FONT_LEADING = 3; //Pixels between lines...
 
-function calculateNodeSizesAndPositions(node) {
+function calculateNodeSizesAndPositions(node, level) {
     /*
      * philosophy: starting from the root, we don't know how big the container
      * has to be. traverse its children until hitting a node with no children
@@ -151,6 +154,7 @@ function calculateNodeSizesAndPositions(node) {
     if (node.childBlockObjects.length != 0) {
         //Reset this node's height since it's getting recalculated.
         node.height = INTERNODE_SPACING;
+        node.width = 0;
         
         for (var i = 0; i < node.childBlockObjects.length; i++) {
             //We know that the child will have to be indented from the parent.
@@ -162,7 +166,7 @@ function calculateNodeSizesAndPositions(node) {
             }
             
             //Have the node find its height and width...
-            calculateNodeSizesAndPositions(node.childBlockObjects[i]);
+            calculateNodeSizesAndPositions(node.childBlockObjects[i], level + 1);
            
            
            if (i + 1 < node.childBlockObjects.length) {
@@ -172,6 +176,11 @@ function calculateNodeSizesAndPositions(node) {
            
            //Coming up from the child, let's recalculate our own height...
            node.height += node.childBlockObjects[i].height + INTERNODE_SPACING;
+           
+           //Our width is the width of the best child...
+           if (node.childBlockObjects[i].width > node.width) {
+               node.width = node.childBlockObjects[i].width + (CHILD_INDENT * (level + 1));
+           }
         }
     } else {
         //Base case, need to tell the parent how big we are..
@@ -187,7 +196,7 @@ function calculateNodeSizesAndPositions(node) {
         node.width = max * FONT_SIZE;
         
         //Height is the number of lines...
-        node.height = node.content.length * FONT_SIZE;
+        node.height = node.content.length * (FONT_SIZE + FONT_LEADING);
     }    
     
 }
@@ -207,6 +216,12 @@ function drawNodeRecurse(node) {
     context.rect(node.posX, node.posY, node.width, node.height);
     context.closePath();
     context.fill();
+    
+    //Draw each line of its text...
+    context.fillStyle = "#eee";
+    for (var i = 0; i < node.content.length; i++) {
+        context.fillText(node.content[i], node.posX, node.posY + (i + 1) * (FONT_SIZE + FONT_LEADING));
+    }
     
     //and all of its children inside
     if (node.childBlockObjects != null) {

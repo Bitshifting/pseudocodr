@@ -16,7 +16,7 @@ function blockObject(title, content, bgColor, childBlockObjects) {
     //into this node object. Don't change them!
     this.posX = 0;
     this.posY = 0;
-    this.width = 25;
+    this.width = 0;
     this.height = 0;
     
 }
