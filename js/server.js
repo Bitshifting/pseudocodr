@@ -42,19 +42,21 @@ $(document).ready(function() {
         //set up receiving messages
         socket.on('message', function(data) {
             if (data['pseudo'] == $('#receivedUserName').val()) {
-                console.log(data['message']);
                 $('#textInput').html(data['message']);
+                if ($("#textInput").text().toLowerCase().contains('so wow')) {
+                    $("#logo").attr("src", "img/PS_Icon_Doge.png");
+                }
                 reparse();
             }
         });
     });
 });
 
-jQuery.fn.center = function () {
-    this.css("position","absolute");
-    this.css("top", Math.max(0, (($("#logoDiv").height() - $(this).outerHeight()) / 2) + 
-                                                $(window).scrollTop()) + "px");
-    this.css("left", Math.max(0, (($("#logoDiv").width() - $(this).outerWidth()) / 2) + 
-                                                $(window).scrollLeft()) + "px");
+jQuery.fn.center = function() {
+    this.css("position", "absolute");
+    this.css("top", Math.max(0, (($("#logoDiv").height() - $(this).outerHeight()) / 2) +
+            $(window).scrollTop()) + "px");
+    this.css("left", Math.max(0, (($("#logoDiv").width() - $(this).outerWidth()) / 2) +
+            $(window).scrollLeft()) + "px");
     return this;
 }
