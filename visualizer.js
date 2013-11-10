@@ -115,11 +115,11 @@ function updateMousePosition(event) {
 
     repaint();
 
-    context.fillStyle = "#696900";
-    context.beginPath();
-    context.rect(mouseX - 5, mouseY - 5, 10, 10);
-    context.closePath();
-    context.fill();
+//    context.fillStyle = "#696900";
+//    context.beginPath();
+//    context.rect(mouseX - 5, mouseY - 5, 10, 10);
+//    context.closePath();
+//    context.fill();
 }
 
 

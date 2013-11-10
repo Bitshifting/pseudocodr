@@ -3,10 +3,11 @@ $(document).ready(function() {
 
         //only happen if space, tab, or enter
         if ((e.keyCode == 32) || (e.keyCode == 9) || (e.keyCode == 13)) {
-
+            if ($("#textInput").text().toLowerCase().contains('so wow')) {
+                $("#logo").attr("src", "img/PS_Icon_Doge.png");
+            }
             removeTags();
         }
-
 
     });
 
@@ -23,6 +24,8 @@ $(document).ready(function() {
             $('.else').contents().unwrap();
             $('.while').contents().unwrap();
             $('.end').contents().unwrap();
+            $('#textInput * div').contents().unwrap();
+            $('#textInput > div').contents().unwrap();
 
             //grab text and add a class to the words
             var text = $('#textInput').html();
@@ -123,7 +126,9 @@ function removeTags() {
     $('.else').contents().unwrap();
     $('.while').contents().unwrap();
     $('.end').contents().unwrap();
-    
+    $('#textInput * div').contents().unwrap();
+    $('#textInput > div').contents().unwrap();
+
     //grab text and add a class to the words
     var text = $('#textInput').html();
     returnText = text;
@@ -140,10 +145,9 @@ function removeTags() {
 
     //restore cursor
     rangy.restoreSelection(sel);
-    
+
     returnText = returnText.replace(/<br>/g, '\n');
     returnText = returnText.replace(new RegExp('<span(.*)</span>', 'g'), '');
-    console.log(returnText);
     return returnText;
 
 }

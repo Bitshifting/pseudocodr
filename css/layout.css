@@ -32,43 +32,20 @@ html, body {
     height:10%;
 }
 
-/*#files {
-    width:132px;
-    background: transparent;
-    height:100%;
-    float:right;
-    color: transparent;
-}*/
-
-#button{
-    position: relative;
-    left:0px;
-    font-size: 24px;
-    height: auto;
-    width: 100px;
-    background-color:transparent;
-    border: none;
-    margin-right: 15px;
-    margin-top: 35px;
-    float:right;
-    text-decoration:underline
-    
-}
-
 a:link{
-  color:black;
+    color:black;
 }
 a:visited{
-  color:black;
+    color:black;
 }
 a:hover{
-  color:black;
+    color:black;
 }
 a:focus{
-  color:black;
+    color:black;
 }
 a:active{
-  color:black;
+    color:black;
 }
 
 #logo {
@@ -90,10 +67,26 @@ a:active{
     float: right;
     position: relative;
     height:auto;
-    width:auto;
+    width:100px;
     font-size: 24px;
     margin-right: 15px;
-    margin-top: 30px;
+    margin-top:-15px;
+    top:50%;
+}
+
+#button{
+    position: relative;
+    font-size: 24px;
+    height: auto;
+    width: 100px;
+    background-color:transparent;
+    border: none;
+    margin-right: 15px;
+    margin-top:-10px;
+    top:50%;
+    float:right;
+    text-decoration:underline
+
 }
 
 #mainCanvas {
@@ -108,7 +101,7 @@ a:active{
     white-space:pre;
     overflow: auto;
     border-width: 1px;
-    background-color: #888;
+    background-color: #555;
     outline-width: 0;
     font-family: Consolas, monospace, serif;
     color: white;
@@ -118,35 +111,30 @@ a:active{
 
 .object {
     font-weight: bold;
-    color: #234466;
+    color: #327BC7;
 }
 
 .function {
     font-weight: bold;
-    color: #612963;
+    color: #CB4ECF;
 }
 
 .if {
     font-weight: bold;
-    color: #571F1F;
+    color: #E83C3C;
 }
 
-.elseif {
+.elseif, .else {
     font-weight: bold;
-    color: #571F1F;
-}
-
-.else {
-    font-weight: bold;
-    color: #571F1F;
+    color: #D3DE31;
 }
 
 .while {
     font-weight: bold;
-    color: #206620;
+    color: #4ACF4A;
 }
 
 .end {
     font-weight: bold;
-    color: #B90091;
+    color: #FF7A00;
 }
