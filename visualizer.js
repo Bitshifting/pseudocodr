@@ -148,7 +148,7 @@ function thereWasANodeUpdate() {
 }
 
 var CHILD_INDENT = 24;
-var INTERNODE_SPACING = 36;
+var INTERNODE_SPACING = 18;
 var FONT_SIZE = 12;
 var FONT_LEADING = 3; //Pixels between lines...
 var HEADER_HEIGHT = 24;
@@ -169,7 +169,12 @@ function calculateNodeSizesAndPositions(node, level) {
         
         
         //Add to our height any content we have too...
-        node.height += node.content.length * (FONT_SIZE + FONT_LEADING) + HEADER_HEIGHT;
+        //Unless this is an if statement, cuz we won't be displaying those...
+        if (node.statementType == "if") {
+            node.height += HEADER_HEIGHT;
+        } else {
+            node.height += node.content.length * (FONT_SIZE + FONT_LEADING) + HEADER_HEIGHT;
+        }
         
         for (var i = 0; i < node.childBlockObjects.length; i++) {
             //We know that the child will have to be indented from the parent.

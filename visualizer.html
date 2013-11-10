@@ -97,11 +97,11 @@
             
             var test = new blockObject("Pseudocode Title", [], "file", []);
             test.childBlockObjects.push(new blockObject("Instructions", ["doTheThing()", "doTheOtherThing()"], "instructions", []));
-            test.childBlockObjects.push(new blockObject("If Statement", ["weDoTheThings", "theyDoTheThings", "someoneDoesTheThings", "else"], "if", [
-                new blockObject("Instructions", ["doMoreThings()"], "instructions", []),
-                new blockObject("Instructions", ["doFewerThings()"], "instructions", []),
-                new blockObject("Instructions", ["doNothing()"], "instructions"),
-                new blockObject("Instructions", ["doEverything()", "doEveryone()"], "instructions", [])                
+            test.childBlockObjects.push(new blockObject("If...", [], "if", [
+                new blockObject("weDoTheThings", ["doMoreThings()"], "instructions", []),
+                new blockObject("theyDoTheThings", ["doFewerThings()"], "instructions", []),
+                new blockObject("someoneDoesTheThings", ["doNothing()"], "instructions"),
+                new blockObject("else", ["doEverything()", "doEveryone()"], "instructions", [])                
                 
             ])); //End of if statement
             
@@ -113,13 +113,13 @@
             test.childBlockObjects.push(new blockObject("human", ["var localVariable = 123"], "object", [
                 new blockObject("DoWork()", ["doItInTheMorning()", "doItInTheEvening()", "doItAtNight()", "doItInTheShower()", "doItRightNow()", "breathe()"], "function", []),
                 new blockObject("Instructions", ["doSomeHumanLogic()", "moreHumanLogic()", "superDuperHumanLogic()"], "instructions", []),
-                new blockObject("If Statement", ["thingsAreBeautiful", "else"], "if" , [
-                    new blockObject("Instructions", ["celebrate"], "instructions", [
-                    new blockObject("If Statement", ["thingsAreStillBeautiful"], "if", [
-                        new blockObject("Instructions", ["keepCelebrating"], "instructions", [])
+                new blockObject("If...", [], "if" , [
+                    new blockObject("thingsAreBeautiful", ["celebrate"], "instructions", [
+                    new blockObject("If...", [], "if", [
+                        new blockObject("thingsAreStillBeautiful", ["keepCelebrating"], "instructions", [])
                         ])
                     ]),
-                    new blockObject("Instructions", ["cry()"], "instructions", [])
+                    new blockObject("else", ["cry()"], "instructions", [])
                 ])
             ]));
 
