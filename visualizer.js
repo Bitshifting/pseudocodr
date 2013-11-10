@@ -142,6 +142,8 @@ var CHILD_INDENT = 24;
 var INTERNODE_SPACING = 12;
 var FONT_SIZE = 12;
 var FONT_LEADING = 3; //Pixels between lines...
+var HEADER_HEIGHT = 24;
+var HEADER_BORDER_SIZE = 2;
 
 function calculateNodeSizesAndPositions(node, level) {
     /*
@@ -157,7 +159,7 @@ function calculateNodeSizesAndPositions(node, level) {
         
         
         //Add to our height any content we have too...
-        node.height += node.content.length * (FONT_SIZE + FONT_LEADING);
+        node.height += node.content.length * (FONT_SIZE + FONT_LEADING) + HEADER_HEIGHT;
         
         for (var i = 0; i < node.childBlockObjects.length; i++) {
             //We know that the child will have to be indented from the parent.
@@ -201,7 +203,8 @@ function calculateNodeSizesAndPositions(node, level) {
         node.width = max * FONT_SIZE;
         
         //Height is the number of lines... and then some leading at the end.
-        node.height = node.content.length * (FONT_SIZE + FONT_LEADING)  + FONT_SIZE ;
+        //Also, some for the header describing each block type.
+        node.height = node.content.length * (FONT_SIZE + FONT_LEADING)  + FONT_SIZE + HEADER_HEIGHT;
     }    
     
 }
@@ -228,6 +231,29 @@ function colorLookup(type) {
     return "#f00";
 }
 
+
+function colorLookupMute(type) {
+    if (type === "if") {
+        return "#220000";
+    }
+    if (type === "instructions") {
+        return "#444";
+    }
+    if (type === "file") {
+        return "#111";
+    }
+    if (type === "function") {
+        return "#411";
+    }
+    if (type === "loop") {
+        return "#141";
+    }
+    if (type === "object") {
+        return "#114";
+    }
+    return "#d00";
+}
+
 /**
  * The sizes of these nodes have already been calculated by calculateNodeSizesAndPositions(),
  * so be sure to call thereWasANodeUpdate() whenever stuff changes!
@@ -244,10 +270,18 @@ function drawNodeRecurse(node) {
     context.closePath();
     context.fill();
     
-    //Draw each line of its text...
-    context.fillStyle = "#eee";
+    //Draw the header including the block title..
+    context.fillStyle = colorLookupMute(node.statementType);
+    context.beginPath();
+    context.rect(node.posX + HEADER_BORDER_SIZE, node.posY + HEADER_BORDER_SIZE, node.width - HEADER_BORDER_SIZE * 2, HEADER_HEIGHT - HEADER_BORDER_SIZE * 2);
+    context.closePath();
+    context.fill();
+    
+    //Draw each line of its text... Inlcuding the title
+    context.fillStyle = '#eee';
+    context.fillText(node.title, node.posX + HEADER_BORDER_SIZE + CHILD_INDENT / 2, node.posY + HEADER_BORDER_SIZE + FONT_SIZE + FONT_LEADING);
     for (var i = 0; i < node.content.length; i++) {
-        context.fillText(node.content[i], node.posX, node.posY + (i + 1) * (FONT_SIZE + FONT_LEADING));
+        context.fillText(node.content[i], node.posX, HEADER_HEIGHT + node.posY + (i + 1) * (FONT_SIZE + FONT_LEADING));
     }
     
     //and all of its children inside
