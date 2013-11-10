@@ -4,32 +4,7 @@ $(document).ready(function() {
         //only happen if space, tab, or enter
         if ((e.keyCode == 32) || (e.keyCode == 9) || (e.keyCode == 13)) {
 
-            var sel = rangy.saveSelection();
-
-            //unwrap
-            $('.object').contents().unwrap();
-            $('.function').contents().unwrap();
-            $('.if').contents().unwrap();
-            $('.elseif').contents().unwrap();
-            $('.else').contents().unwrap();
-            $('.while').contents().unwrap();
-            $('.end').contents().unwrap();
-
-            //grab text and add a class to the words
-            var text = $('#textInput').html();
-            text = text.replace(/\bobject\b/ig, '<span class="object">object</span>');
-            text = text.replace(/\bfunction\b/ig, '<span class="function">function</span>');
-            text = text.replace(/\bif\b/ig, '<span class="if">if</span>');
-            text = text.replace(/\belseif\b/ig, '<span class="elseif">elseif</span>');
-            text = text.replace(/\belse\b/ig, '<span class="else">else</span>');
-            text = text.replace(/\bwhile\b/ig, '<span class="while">while</span>');
-            text = text.replace(/\bend\b/ig, '<span class="end">end</span>');
-
-            //replace the html div
-            $('#textInput').html(text);
-
-            //restore cursor
-            rangy.restoreSelection(sel);
+            removeTags();
         }
 
 
@@ -133,5 +108,42 @@ function save() {
             'href',
             'data:Content-type: text/plain, ' + escape(note)
             );
+
+}
+
+function removeTags() {
+    var sel = rangy.saveSelection();
+    var returnText;
+
+    //unwrap
+    $('.object').contents().unwrap();
+    $('.function').contents().unwrap();
+    $('.if').contents().unwrap();
+    $('.elseif').contents().unwrap();
+    $('.else').contents().unwrap();
+    $('.while').contents().unwrap();
+    $('.end').contents().unwrap();
+    
+    //grab text and add a class to the words
+    var text = $('#textInput').html();
+    returnText = text;
+    text = text.replace(/\bobject\b/ig, '<span class="object">object</span>');
+    text = text.replace(/\bfunction\b/ig, '<span class="function">function</span>');
+    text = text.replace(/\bif\b/ig, '<span class="if">if</span>');
+    text = text.replace(/\belseif\b/ig, '<span class="elseif">elseif</span>');
+    text = text.replace(/\belse\b/ig, '<span class="else">else</span>');
+    text = text.replace(/\bwhile\b/ig, '<span class="while">while</span>');
+    text = text.replace(/\bend\b/ig, '<span class="end">end</span>');
+
+    //replace the html div
+    $('#textInput').html(text);
+
+    //restore cursor
+    rangy.restoreSelection(sel);
+    
+    returnText = returnText.replace(/<br>/g, '\n');
+    returnText = returnText.replace(new RegExp('<span(.*)</span>', 'g'), '');
+    console.log(returnText);
+    return returnText;
 
 }

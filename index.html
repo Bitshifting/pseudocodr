@@ -30,6 +30,7 @@
         <script src="js/rangy-cssclassapplier.js"></script> 
         <script src="js/rangy-selectionsaverestore.js"></script> 
         <script src="js/rangy-serializer.js"></script>
+        <script src="js/syntaxHighlight.js"></script> 
 
         <script src='blockdatas.js'></script>
         <script src='visualizer.js'></script>
@@ -79,7 +80,7 @@
 
                 //It's HTML and we need to clean the tags-
                 //alert($('#textInput').html());
-                var lines = strip($('#textInput').html().replace(/\<br\>/g, '\n')).split('\n');
+                var lines = removeTags().split('\n');
                 //alert(lines);
 
                 //return;
@@ -163,7 +164,5 @@
         </script>
 
 
-
-        <script src="js/syntaxHighlight.js"></script> 
     </body>
 </html>
