@@ -203,6 +203,11 @@ function calculateNodeSizesAndPositions(node, level) {
            if (node.childBlockObjects[i].width > node.width) {
                node.width = node.childBlockObjects[i].width + (CHILD_INDENT * (level + 1));
            }
+           
+           //Or if the title's longer.
+           if (node.title.length * FONT_SIZE + CHILD_INDENT / 2 > node.width) {
+               node.width = node.title.length * FONT_SIZE + CHILD_INDENT / 2;
+           }
         }
     } else {
         //Base case, need to tell the parent how big we are..
@@ -212,6 +217,12 @@ function calculateNodeSizesAndPositions(node, level) {
             if (node.content[i].length > max) {
                 max = node.content[i].length;
             }
+        }
+        
+        
+        //Or if the title's longer.
+        if (node.title.length > max) {
+            max = node.title.length;
         }
         
         //multiply by width and height of the font...
@@ -311,7 +322,7 @@ function drawNodeRecurse(node, arrowToNextNode) {
  if (arrowToNextNode) {
     //Draw an arrow out of this node to the next one...
     context.beginPath();
-    context.rect(offX + node.posX + node.width / 2 - ARROW_WIDTH, offY + node.posY + node.height, ARROW_WIDTH / 2, INTERNODE_SPACING);
+    context.rect(offX + node.posX + node.width / 2 - ARROW_WIDTH, offY + node.posY + node.height, ARROW_WIDTH / 2, INTERNODE_SPACING - 2);
     context.closePath();
     context.fill();
 
