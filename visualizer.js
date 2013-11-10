@@ -36,7 +36,7 @@ function initEverything() {
     if (element.getContext) {
         context = element.getContext('2d');
         
-        context.font = "12px Courier New";
+        context.font = "14px Courier New";
         
         /*var canvas = document.querySelector('canvas');
         canvas.style.width ='100%';
@@ -149,7 +149,7 @@ function thereWasANodeUpdate() {
 
 var CHILD_INDENT = 24;
 var INTERNODE_SPACING = 24;
-var FONT_SIZE = 12;
+var FONT_SIZE = 14;
 var FONT_LEADING = 3; //Pixels between lines...
 var HEADER_HEIGHT = 24;
 var HEADER_BORDER_SIZE = 2;
@@ -201,11 +201,11 @@ function calculateNodeSizesAndPositions(node, level) {
            
            //Our width is the width of the best child...
            if (node.childBlockObjects[i].width > node.width) {
-               node.width = node.childBlockObjects[i].width + (CHILD_INDENT * (level + 1));
+               node.width = node.childBlockObjects[i].width + (CHILD_INDENT +  CHILD_INDENT * (level + 1));
            }
            
            //Or if the title's longer.
-           if (node.title.length * FONT_SIZE + CHILD_INDENT / 2 > node.width) {
+           if (node.title.length * FONT_SIZE > node.width) {
                node.width = node.title.length * FONT_SIZE + CHILD_INDENT / 2;
            }
         }
@@ -227,7 +227,7 @@ function calculateNodeSizesAndPositions(node, level) {
         
         //multiply by width and height of the font...
         node.width = max * FONT_SIZE;
-        
+        node.width *= 0.7; //fudge factor
         //Height is the number of lines... and then some leading at the end.
         //Also, some for the header describing each block type.
         node.height = node.content.length * (FONT_SIZE + FONT_LEADING)  + FONT_SIZE + HEADER_HEIGHT;
@@ -258,25 +258,46 @@ function colorLookup(type) {
 }
 
 
-function colorLookupMute(type) {
-    return '#292929';
+function colorLookupBrite(type) {
     if (type === "if") {
-        return "#A36C6C";
+        return "#E83C3C";
     }
     if (type === "instructions") {
-        return "#B0B382";
+        return "#D3DE31";
     }
     if (type === "file") {
-        return "#292828";
+        return "#A8A0A0";
     }
     if (type === "function") {
-        return "#AC8CAD";
+        return "#CB4ECF";
     }
     if (type === "loop") {
-        return "#699669";
+        return "#4ACF4A";
     }
     if (type === "object") {
-        return "#91A7BD";
+        return "#327BC7";
+    }
+    return "#d00";
+}
+
+function colorLookupMute(type) {
+    if (type === "if") {
+        return "#3B1E1E";
+    }
+    if (type === "instructions") {
+        return "#4D4C2F";
+    }
+    if (type === "file") {
+        return "#222";
+    }
+    if (type === "function") {
+        return "#49354A";
+    }
+    if (type === "loop") {
+        return "#2D402D";
+    }
+    if (type === "object") {
+        return "#333D47";
     }
     return "#d00";
 }
@@ -298,15 +319,22 @@ function isExecutableBlock(node) {
  */
 function drawNodeRecurse(node, arrowToNextNode) {
     //draw each node
-    context.fillStyle = colorLookup(node.statementType);
-
+    context.fillStyle = colorLookupMute(node.statementType);
     context.beginPath();
     context.rect(offX + node.posX, offY + node.posY, node.width, node.height);
     context.closePath();
     context.fill();
     
+    context.strokeStyle = colorLookupBrite(node.statementType);
+    context.lineWidth = 1;
+    context.beginPath();
+    context.rect(offX + node.posX, offY + node.posY, node.width, node.height);
+    context.closePath();
+    context.stroke();
+    
+    
     //Draw the header including the block title..
-    context.fillStyle = colorLookupMute(node.statementType);
+    context.fillStyle = colorLookup(node.statementType);
     context.beginPath();
     context.rect(offX + node.posX + HEADER_BORDER_SIZE, offY + node.posY + HEADER_BORDER_SIZE, node.width - HEADER_BORDER_SIZE * 2, HEADER_HEIGHT - HEADER_BORDER_SIZE * 2);
     context.closePath();

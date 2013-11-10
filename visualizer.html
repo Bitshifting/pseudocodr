@@ -122,7 +122,10 @@
                     new blockObject("else", ["cry()"], "instructions", [])
                 ])
             ]));
-
+            test.childBlockObjects.push(new blockObject(("Instructions"), ["cleanup()"], "instructions", []));
+            test.childBlockObjects.push(new blockObject(("If..."), ["clean"], "if", [
+                new blockObject(("Instructions"), ["party()"], "instructions", [])
+            ]));
             
             visualizer.setRootNode(test);
             visualizer.thereWasANodeUpdate();
