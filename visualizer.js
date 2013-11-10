@@ -153,6 +153,7 @@ var FONT_SIZE = 12;
 var FONT_LEADING = 3; //Pixels between lines...
 var HEADER_HEIGHT = 24;
 var HEADER_BORDER_SIZE = 2;
+var ARROW_WIDTH = 8;
 
 function calculateNodeSizesAndPositions(node, level) {
     /*
@@ -263,6 +264,14 @@ function colorLookupMute(type) {
     return "#d00";
 }
 
+function isExecutableBlock(node) {
+    //Whether this block should have an arrow coming into it..
+    if (node.statementType == "if" || node.statementType == "instructions" || node.statementType == "loop") {
+        return true;
+    }
+    return false;
+}
+
 /**
  * The sizes of these nodes have already been calculated by calculateNodeSizesAndPositions(),
  * so be sure to call thereWasANodeUpdate() whenever stuff changes!
@@ -270,7 +279,7 @@ function colorLookupMute(type) {
  * @param {type} node
  * @returns {undefined}
  */
-function drawNodeRecurse(node) {
+function drawNodeRecurse(node, arrowToNextNode) {
     //draw each node
     context.fillStyle = colorLookup(node.statementType);
 
@@ -293,10 +302,39 @@ function drawNodeRecurse(node) {
         context.fillText(node.content[i], offX + node.posX + CHILD_INDENT / 4, offY + HEADER_HEIGHT + node.posY + (i + 1) * (FONT_SIZE + FONT_LEADING));
     }
     
+    //Check if the next node is valid and something executable...
+ if (arrowToNextNode) {
+    //Draw an arrow out of this node to the next one...
+    context.beginPath();
+    context.rect(offX + node.posX + node.width / 2 - ARROW_WIDTH, offY + node.posY + node.height, ARROW_WIDTH / 2, INTERNODE_SPACING);
+    context.closePath();
+    context.fill();
+
+//Draw LHS arrow
+    context.strokeStyle = '#eee';
+    context.lineWidth = ARROW_WIDTH / 2;
+    context.beginPath();
+    context.moveTo(offX + node.posX + node.width / 2 - ARROW_WIDTH - INTERNODE_SPACING / 2, offY + node.posY + node.height + INTERNODE_SPACING / 2);
+    context.lineTo(offX + node.posX + node.width / 2 - ARROW_WIDTH, offY + node.posY + node.height + INTERNODE_SPACING);
+    context.stroke();
+
+//Draw RHS arrow
+    context.lineWidth = ARROW_WIDTH / 2;
+    context.beginPath();
+    context.moveTo(offX + node.posX + node.width / 2 - ARROW_WIDTH / 2 + INTERNODE_SPACING / 2, offY + node.posY + node.height + INTERNODE_SPACING / 2);
+    context.lineTo(offX + node.posX + node.width / 2 - ARROW_WIDTH / 2, offY + node.posY + node.height + INTERNODE_SPACING);
+    context.stroke();
+ }
     //and all of its children inside
     if (node.childBlockObjects != null) {
         for (var i = 0; i < node.childBlockObjects.length; i++) {
-           drawNodeRecurse(node.childBlockObjects[i]);
+            if (i + 1 < node.childBlockObjects.length) {
+           drawNodeRecurse(node.childBlockObjects[i], (node.statementType == "if" ? false : isExecutableBlock(node.childBlockObjects[i+1])));
+            } else
+                {
+                    //No chance of an arrow..
+                    drawNodeRecurse(node.childBlockObjects[i]);
+                }
         }
     }
 }
