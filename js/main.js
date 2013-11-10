@@ -15,23 +15,23 @@ $(document).ready(function() {
 
 
 var StmtRegExps = {
-	objStmt : new RegExp("\s*object\s+\w+\s*", "g"),
+	objStmt : /\s*object\s+\w+\s*/,
 
-	fnStmt : new RegExp("\s*function\s+\w+", "g"),
+	fnStmt : /\s*function\s+\w+/,
 
-	ifStmt : new RegExp("\s*if\s+\w+\s*", "g"),
+	ifStmt : /\s*if\s+\w+\s*/,
 
-	elseifStmt: new RegExp("\s*elseif\s+\w+\s*", "g"),
+	elseifStmt: /\s*elseif\s+\w+\s*/,
 
-	elseStmt : new RegExp("\s*else\s*", "g"),
+	elseStmt : /\s*else\s*/,
 
-	whileStmt : new RegExp("\s*while\s+\w+\s*", "g"), 
+	whileStmt : /\s*while\s+\w+\s*/, 
 
-	endStmt : new RegExp("\s*end\s*", "g"),
+	endStmt : /\s*end\s*/,
 
-	regStmt : new RegExp(".+", "g"),
+	regStmt : /.+/,
 
-	condition : new RegExp("\s*.+", "g")
+	condition : /\s*.+/
 };
 
 function Parser(inputText) {
@@ -44,17 +44,35 @@ function Parser(inputText) {
 
 	for (var i = 0; i < inputText.length; i++) {
 		var currLine = inputText[i];
-		if(!currLine.match(StmtRegExps.objStmt) || 
-			!currLine.match(StmtRegExps.fnStmt) ||
-			!currLine.match(StmtRegExps.ifStmt) ||
-			!currLine.match(StmtRegExps.endStmt)) {
+		if(!StmtRegExps.endStmt.test(currLine)) {
 
-			if (currLine.match(StmtRegExps.regStmt)) {
+			if (StmtRegExps.objStmt.test(currLine) ||
+				StmtRegExps.fnStmt.test(currLine) ||
+				StmtRegExps.ifStmt.test(currLine) ||
+				StmtRegExps.whileStmt.test(currLine) ||
+				StmtRegExps.elseifStmt.test(currLine) ||
+				StmtRegExps.elseStmt.test(currLine)) {
+				if (instructBlock.stmts.length !== 0) {
+					blockObjStack.push(instructBlock);
+					instructBlock = new blockObject('', Consts.INSTRUCT_TYPE, [], []);
+					stringStack.push(Consts.FROM_STACK);
+				}
 				stringStack.push(currLine);
 			}
+			else if (StmtRegExps.regStmt.test(currLine)) {
+				instructBlock.stmts.push(currLine);
+			}
+			if (i === inputText.length -1) {
+				blockObjStack.push(instructBlock);
+			}
 		}
-		else if (currLine.match(StmtRegExps.endStmt)) {
+		else if(StmtRegExps.endStmt.test(currLine.toString())) {
 			console.log('found end');
+			if(instructBlock.stmts.length !== 0) {
+				blockObjStack.push(instructBlock);
+				instructBlock = new blockObject('', Consts.INSTRUCT_TYPE, [], []);
+				stringStack.push(Consts.FROM_STACK);
+			}
 			var currInstructs = new blockObject('', Consts.INSTRUCT_TYPE, [], []);
 			var tmpBlockObj = new blockObject('', Consts.INIT_TYPE, [], []);
 			var shouldBeIf = false;
@@ -62,85 +80,86 @@ function Parser(inputText) {
 			for(var j = stringStack.length -1; j >= 0; j--) {
 				var currString = stringStack.pop();
 				if (currString === Consts.FROM_STACK) {
-					if(currInstructs.length !== 0) {
+					if(currInstructs.stmts.length !== 0) {
 						tmpBlockObj.children.push(currInstructs);
-						hitBlock = true;
+						currInstructs = new blockObject('', Consts.INSTRUCT_TYPE, [], []);
 					}
 					tmpBlockObj.children.push(blockObjStack.pop());
 				}
-				else if(currString.match(StmtRegExps.elseStmt)) {
+				else if(StmtRegExps.elseStmt.test(currString)) {
 					shouldBeIf = true;
-					if(currInstructs.length !== 0) {
+					if(currInstructs.stmts.length !== 0) {
 						tmpBlockObj.children.push(currInstructs);
-						hitBlock = true;
+						currInstructs = new blockObject('', Consts.INSTRUCT_TYPE, [], []);
 					}
 					tmpBlockObj.stmts.push(currString);
 				}
-				else if(currString.match(StmtRegExps.elseifStmt)) {
+				else if(StmtRegExps.elseifStmt.test(currString)) {
 					shouldBeIf = true;
-					if(currInstructs.length !== 0) {
+					if(currInstructs.stmts.length !== 0) {
 						tmpBlockObj.children.push(currInstructs);
-						hitBlock = true;
+						currInstructs = new blockObject('', Consts.INSTRUCT_TYPE, [], []);
 					}
 					tmpBlockObj.stmts.push(currString);
 				}
-				else if(currString.match(StmtRegExps.ifStmt)) {
-					if(currInstructs.length !== 0) {
+				else if(StmtRegExps.ifStmt.test(currString)) {
+					if(currInstructs.stmts.length !== 0) {
 						tmpBlockObj.children.push(currInstructs);
-						hitBlock = true;
+						currInstructs = new blockObject('', Consts.INSTRUCT_TYPE, [], []);
 					}
 					tmpBlockObj.stmtType = Consts.IF_TYPE;
 					break;
 				}
-				else if(currString.match(StmtRegExps.whileStmt)) {
+				else if(StmtRegExps.whileStmt.test(currString)) {
 					if (shouldBeIf) {
 						return new blockObject('', Consts.ERROR_TYPE, [], []);
 					}
-					if(currInstructs.length !== 0) {
+					if(currInstructs.stmts.length !== 0) {
 						tmpBlockObj.children.push(currInstructs);
-						hitBlock = true;
+						currInstructs = new blockObject('', Consts.INSTRUCT_TYPE, [], []);
 					}
 					tmpBlockObj.stmtType = Consts.WHILE_TYPE;
 					break;
 				}
-				else if(currString.match(StmtRegExps.fnStmt)) {
+				else if(StmtRegExps.fnStmt.test(currString)) {
 					if (shouldBeIf) {
 						return new blockObject('', Consts.ERROR_TYPE, [], []);
 					}
-					if(currInstructs.length !== 0) {
+					if(currInstructs.stmts.length !== 0) {
 						tmpBlockObj.children.push(currInstructs);
-						hitBlock = true;
+						currInstructs = new blockObject('', Consts.INSTRUCT_TYPE, [], []);
 					}
 					tmpBlockObj.stmtType = Consts.FN_TYPE;
 					break;
 				}
-				else if(currString.match(StmtRegExps.objStmt)) {
+				else if(StmtRegExps.objStmt.test(currString)) {
 					if (shouldBeIf) {
 						return new blockObject('', Consts.ERROR_TYPE, [], []);
 					}
-					if(currInstructs.length !== 0) {
+					if(currInstructs.stmts.length !== 0) {
 						tmpBlockObj.children.push(currInstructs);
-						hitBlock = true;
+						currInstructs = new blockObject('', Consts.INSTRUCT_TYPE, [], []);
 					}
 					tmpBlockObj.stmtType = Consts.OBJ_TYPE;
 					break;
 				}
-				else if(currString.match(StmtRegExps.regStmt)) {
-					currInstructs.stmts.push(currString);
+				else if(StmtRegExps.regStmt.test(currString)) {
+					currInstructs.stmts.unshift(currString);
 				}
+				console.log(blockObjStack);
+				console.log(stringStack);
 			}
 
 			tmpBlockObj.stmts.reverse();
 			tmpBlockObj.children.reverse();
 			blockObjStack.push(tmpBlockObj);
+			stringStack.push(Consts.FROM_STACK);
+			//console.log(blockObjStack);
 		}
-		else if (i === inputText.length) {
-			blockObjStack.reverse();
-			parentBlock.children = blockObjStack;
-		}
-
 	}
-	console.log(stringStack);
+	//console.log(stringStack);
+	//blockObjStack.reverse();
+	parentBlock.children = blockObjStack;
 	return parentBlock;
 }
 
