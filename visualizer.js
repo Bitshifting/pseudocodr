@@ -124,7 +124,6 @@ function mouseClicked() {
  */
 function setRootNode(rootnode) {
     rootN = rootnode;
- //   thereWasANodeUpdate();
 }
 
 /**
@@ -156,13 +155,19 @@ function calculateNodeSizesAndPositions(node, level) {
         node.height = INTERNODE_SPACING;
         node.width = 0;
         
+        
+        //Add to our height any content we have too...
+        node.height += node.content.length * (FONT_SIZE + FONT_LEADING);
+        
         for (var i = 0; i < node.childBlockObjects.length; i++) {
             //We know that the child will have to be indented from the parent.
             node.childBlockObjects[i].posX = node.posX + CHILD_INDENT;
             
             if (i === 0) {
                 //Set the first node to start at the Y of this node and down a bit...
-                node.childBlockObjects[i].posY = node.posY + INTERNODE_SPACING;
+                //Include our content height
+                //node.childBlockObjects[i].posY = node.posY + INTERNODE_SPACING;
+                node.childBlockObjects[i].posY = node.posY + node.height;
             }
             
             //Have the node find its height and width...
@@ -195,10 +200,32 @@ function calculateNodeSizesAndPositions(node, level) {
         //multiply by width and height of the font...
         node.width = max * FONT_SIZE;
         
-        //Height is the number of lines...
-        node.height = node.content.length * (FONT_SIZE + FONT_LEADING);
+        //Height is the number of lines... and then some leading at the end.
+        node.height = node.content.length * (FONT_SIZE + FONT_LEADING)  + FONT_SIZE ;
     }    
     
+}
+
+function colorLookup(type) {
+    if (type === "if") {
+        return "#440000";
+    }
+    if (type === "instructions") {
+        return "#777";
+    }
+    if (type === "file") {
+        return "#333";
+    }
+    if (type === "function") {
+        return "#733";
+    }
+    if (type === "loop") {
+        return "#373";
+    }
+    if (type === "object") {
+        return "#337";
+    }
+    return "#f00";
 }
 
 /**
@@ -210,7 +237,7 @@ function calculateNodeSizesAndPositions(node, level) {
  */
 function drawNodeRecurse(node) {
     //draw each node
-    context.fillStyle = node.bgColor;
+    context.fillStyle = colorLookup(node.statementType);
 
     context.beginPath();
     context.rect(node.posX, node.posY, node.width, node.height);
