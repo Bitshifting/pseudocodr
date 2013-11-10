@@ -19,8 +19,10 @@ var inited = false;
 var rootN;
 
 //X and Y offsets for dragging...
-var xOff = 0;
-var yOff = 0;
+var offX = 0;
+var offY = 0;
+
+var boundingRect;
 
 /**
  * Creates the canvas context and assigns it to the 'global' variable context.
@@ -30,12 +32,19 @@ var yOff = 0;
  */
 function initEverything() {
     var element = document.getElementById(canvasName);
-
+    boundingRect = element.getBoundingClientRect();
     if (element.getContext) {
         context = element.getContext('2d');
         
         context.font = "12px Courier New";
-
+        
+        /*var canvas = document.querySelector('canvas');
+        canvas.style.width ='100%';
+        canvas.style.height='100%';
+        // ...then set the internal size to match
+        canvas.width  = canvas.offsetWidth;
+        canvas.height = canvas.offsetHeight;
+*/
         //Determine width and height for local use.
         canvasWidth = element.getAttribute('width');
         canvasHeight = element.getAttribute('height');
@@ -95,13 +104,13 @@ function updateMousePosition(event) {
     }
 
     //From stackoverflow.com/questions/1114465/getting-mouse-location-in-canvas
-    if (event.offsetX) {
-        mouseX = event.offsetX;
-        mouseY = event.offsetY;
-    } else if(event.layerX) {
-        mouseX = event.layerX;
-        mouseY = event.layerY;
-    }
+    //if (event.offsetX) {
+   //     mouseX = event.offsetX;
+   //     mouseY = event.offsetY;
+  //  } else if(event.layerX) {
+        mouseX = event.layerX - boundingRect.left;
+        mouseY = event.layerY - boundingRect.top;
+   // }
     //End from ----------------------------------------------------------------
 
     repaint();
@@ -139,7 +148,7 @@ function thereWasANodeUpdate() {
 }
 
 var CHILD_INDENT = 24;
-var INTERNODE_SPACING = 12;
+var INTERNODE_SPACING = 36;
 var FONT_SIZE = 12;
 var FONT_LEADING = 3; //Pixels between lines...
 var HEADER_HEIGHT = 24;
@@ -266,22 +275,22 @@ function drawNodeRecurse(node) {
     context.fillStyle = colorLookup(node.statementType);
 
     context.beginPath();
-    context.rect(node.posX, node.posY, node.width, node.height);
+    context.rect(offX + node.posX, offY + node.posY, node.width, node.height);
     context.closePath();
     context.fill();
     
     //Draw the header including the block title..
     context.fillStyle = colorLookupMute(node.statementType);
     context.beginPath();
-    context.rect(node.posX + HEADER_BORDER_SIZE, node.posY + HEADER_BORDER_SIZE, node.width - HEADER_BORDER_SIZE * 2, HEADER_HEIGHT - HEADER_BORDER_SIZE * 2);
+    context.rect(offX + node.posX + HEADER_BORDER_SIZE, offY + node.posY + HEADER_BORDER_SIZE, node.width - HEADER_BORDER_SIZE * 2, HEADER_HEIGHT - HEADER_BORDER_SIZE * 2);
     context.closePath();
     context.fill();
     
     //Draw each line of its text... Inlcuding the title
     context.fillStyle = '#eee';
-    context.fillText(node.title, node.posX + HEADER_BORDER_SIZE + CHILD_INDENT / 2, node.posY + HEADER_BORDER_SIZE + FONT_SIZE + FONT_LEADING);
+    context.fillText(node.title, offX + node.posX + HEADER_BORDER_SIZE + CHILD_INDENT / 2, offY + node.posY + HEADER_BORDER_SIZE + FONT_SIZE + FONT_LEADING);
     for (var i = 0; i < node.content.length; i++) {
-        context.fillText(node.content[i], node.posX, HEADER_HEIGHT + node.posY + (i + 1) * (FONT_SIZE + FONT_LEADING));
+        context.fillText(node.content[i], offX + node.posX + CHILD_INDENT / 4, offY + HEADER_HEIGHT + node.posY + (i + 1) * (FONT_SIZE + FONT_LEADING));
     }
     
     //and all of its children inside
@@ -293,6 +302,27 @@ function drawNodeRecurse(node) {
 }
 
 
+var dragX, dragY;
+
+function dragBegin() {
+    dragX = mouseX;
+    dragY = mouseY;
+    dragging = true;
+}
+
+function dragUpdate() {
+    if (dragging) {
+        offX += mouseX - dragX;
+        offY += mouseY - dragY;
+        dragX = mouseX;
+        dragY = mouseY;
+    }
+}
+
+function dragEnd() {
+    dragging = false;
+}
+
 //Object function prototyping.
 this.mouseClicked = mouseClicked;
 this.updateMousePosition = updateMousePosition;
@@ -302,6 +332,9 @@ this.initEverything = initEverything;
 this.setRootNode = setRootNode;
 this.thereWasANodeUpdate = thereWasANodeUpdate;
 
+this.dragBegin = dragBegin;
+this.dragEnd = dragEnd;
+this.dragUpdate = dragUpdate;
 }
 
 var visualizer = new visualizerObject();
