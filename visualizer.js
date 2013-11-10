@@ -148,7 +148,7 @@ function thereWasANodeUpdate() {
 }
 
 var CHILD_INDENT = 24;
-var INTERNODE_SPACING = 18;
+var INTERNODE_SPACING = 24;
 var FONT_SIZE = 12;
 var FONT_LEADING = 3; //Pixels between lines...
 var HEADER_HEIGHT = 24;
@@ -322,7 +322,7 @@ function drawNodeRecurse(node, arrowToNextNode) {
  if (arrowToNextNode) {
     //Draw an arrow out of this node to the next one...
     context.beginPath();
-    context.rect(offX + node.posX + node.width / 2 - ARROW_WIDTH, offY + node.posY + node.height, ARROW_WIDTH / 2, INTERNODE_SPACING - 2);
+    context.rect(offX + node.posX + node.width / 2 - ARROW_WIDTH, offY + node.posY + node.height, ARROW_WIDTH / 2, INTERNODE_SPACING);
     context.closePath();
     context.fill();
 
@@ -331,14 +331,14 @@ function drawNodeRecurse(node, arrowToNextNode) {
     context.lineWidth = ARROW_WIDTH / 2;
     context.beginPath();
     context.moveTo(offX + node.posX + node.width / 2 - ARROW_WIDTH - INTERNODE_SPACING / 2, offY + node.posY + node.height + INTERNODE_SPACING / 2);
-    context.lineTo(offX + node.posX + node.width / 2 - ARROW_WIDTH, offY + node.posY + node.height + INTERNODE_SPACING);
+    context.lineTo(offX + node.posX + node.width / 2 - ARROW_WIDTH, offY + node.posY + node.height + INTERNODE_SPACING - 2);
     context.stroke();
 
 //Draw RHS arrow
     context.lineWidth = ARROW_WIDTH / 2;
     context.beginPath();
     context.moveTo(offX + node.posX + node.width / 2 - ARROW_WIDTH / 2 + INTERNODE_SPACING / 2, offY + node.posY + node.height + INTERNODE_SPACING / 2);
-    context.lineTo(offX + node.posX + node.width / 2 - ARROW_WIDTH / 2, offY + node.posY + node.height + INTERNODE_SPACING);
+    context.lineTo(offX + node.posX + node.width / 2 - ARROW_WIDTH / 2, offY + node.posY + node.height + INTERNODE_SPACING - 2);
     context.stroke();
  }
     //and all of its children inside
