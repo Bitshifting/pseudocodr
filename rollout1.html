@@ -90,14 +90,14 @@
                 //For every line do some parsing...
                 if ((/^if /).test(lines[i])) {
                     //it's an if statement...
-                    curNode = curNode.parent;
+                    if (curNode.statementType == "instructions") {
+                        curNode = curNode.parent;
+                    }
                     var tmp = new blockObject("If...", [], "if", [], curNode);
                     curNode.childBlockObjects.push(tmp);
                     curNode = tmp;
                     
-                    //add the first condition as a child of it...
-                    
-                            
+                    //add the first condition as a child of it...        
                     var tmp2 = new blockObject(lines[i].substr(3), [], "instructions", [], curNode);
                     curNode.childBlockObjects.push(tmp2);
                     curNode = tmp2;
@@ -113,23 +113,31 @@
                     curNode = tmp;
                 } else if ((/^end/).test(lines[i])) {
                     //Up a level!
-                    if (curNode.statementType == "instructions") {
+                    if (curNode.parent.statementType == "if") {
                         curNode = curNode.parent.parent;
-                    }else {
-                    curNode = curNode.parent;
-                    }                   
+                    } else if (curNode.statementType == "instructions") {
+                        curNode = curNode.parent.parent;       
+                    } else {
+                        curNode = curNode.parent;
+                    }
                 } else if ((/^while /).test(lines[i])) {
-                    curNode = curNode.parent;
+                    if (curNode.statementType == "instructions") {
+                        curNode = curNode.parent;
+                    }
                     var tmp = new blockObject("While " + lines[i].substr(6), [], "loop", [], curNode);
                     curNode.childBlockObjects.push(tmp);
                     curNode = tmp;
                 } else if ((/^function /).test(lines[i])) {
-                  curNode = curNode.parent;
+                  if (curNode.statementType == "instructions") {
+                        curNode = curNode.parent;
+                    }
                     var tmp = new blockObject(lines[i].substr(9), [], "function", [], curNode);
                     curNode.childBlockObjects.push(tmp);
                     curNode = tmp;
                 } else if ((/^object /).test(lines[i])) {
-                    curNode = curNode.parent;
+                    if (curNode.statementType == "instructions") {
+                        curNode = curNode.parent;
+                    }
                     var tmp = new blockObject(lines[i].substr(7), [], "object", [], curNode);
                     curNode.childBlockObjects.push(tmp);
                     curNode = tmp;
