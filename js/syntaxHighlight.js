@@ -1,11 +1,10 @@
 $(document).ready(function() {
     $('#textInput').on("keyup", function(e) {
-        if (e.keyCode == 32) {
+        if ((e.keyCode == 32) || (e.keyCode == 9) || (e.keyCode == 13)) {
             var sel = rangy.saveSelection();
 
             $('.Derp').contents().unwrap();
             var text = $('#textInput').html();
-            console.log(text);
             text = text.replace(/\bif\b/ig, '<span class="Derp">if</span>');
             $('#textInput').html(text);
             rangy.restoreSelection(sel);
