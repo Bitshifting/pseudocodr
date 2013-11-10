@@ -39,11 +39,16 @@
             
             visualizer.initEverything();
             visualizer.setRootNode(test);
-            test.childBlockObjects.push(new blockObject("Test child 1", "test child content 1", "#004400"));
-            test.childBlockObjects.push(new blockObject("Test child 2", "test child content 2", "#004444"));
-            test.childBlockObjects.push(new blockObject("Test child 3", "test child content 3", "#000044"));
-            test.childBlockObjects.push(new blockObject("Test child 4", "test child content 4", "#440044"));
-            
+            test.childBlockObjects.push(new blockObject("Test child 1", ["test child content 1", "test child content 1 line 2"], "#004400", []));
+            test.childBlockObjects.push(new blockObject("Test child 2", ["test child content 2", "line2"], "#004444", []));
+            var testWithChildren = new blockObject("Test child 3", ["test child content 3", "line2 in 3"], "#000044", []);
+            testWithChildren.childBlockObjects.push(new blockObject("inner test child", ["innerTestContent", "inner2", "inner3"], "#aa0000", []));           
+            testWithChildren.childBlockObjects.push(new blockObject("inner test child 2", ["innerTestContent2", "inner4", "inner5"], "#aa00aa", []));           
+                        testWithChildren.childBlockObjects.push(new blockObject("inner test child 2", ["innerTestContent2", "conteeennnt"], "#aaaaaa", []));   
+                        
+            test.childBlockObjects.push(testWithChildren);
+            test.childBlockObjects.push(new blockObject("Test child 4", ["test child content 4"], "#440044", []));
+            visualizer.thereWasANodeUpdate();
         </script>
         
         

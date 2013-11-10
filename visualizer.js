@@ -77,6 +77,8 @@ function repaint() {
     if (rootN != null) {
         rootN.posX = 0;
         rootN.posY = 0;
+        //Need to calculate sizes!
+        //And draw from there...
         drawNodeRecurse(rootN);
     }
 }
@@ -120,21 +122,24 @@ function mouseClicked() {
  */
 function setRootNode(rootnode) {
     rootN = rootnode;
-    thereWasANodeUpdate();
+ //   thereWasANodeUpdate();
 }
 
 /**
- * Call when you change a node so the entire tree is redrawn starting from the
+ * Call when you change a node so the entire tree is recalculated starting from the
  * root node...
  * @returns {undefined}
  */
 function thereWasANodeUpdate() {
-    //rewdraw everything!
+     //Calculate node positions...
+     calculateNodeSizesAndPositions(rootN);
+    //and rewdraw everything!
     repaint();
 }
 
 var CHILD_INDENT = 24;
 var INTERNODE_SPACING = 12;
+var FONT_SIZE = 12;
 
 function calculateNodeSizesAndPositions(node) {
     /*
@@ -143,14 +148,17 @@ function calculateNodeSizesAndPositions(node) {
      * and calculate back up the sizes by setting them
      */
     
-    if (node.childBlockObjects != null) {
+    if (node.childBlockObjects.length != 0) {
+        //Reset this node's height since it's getting recalculated.
+        node.height = INTERNODE_SPACING;
+        
         for (var i = 0; i < node.childBlockObjects.length; i++) {
             //We know that the child will have to be indented from the parent.
             node.childBlockObjects[i].posX = node.posX + CHILD_INDENT;
             
             if (i === 0) {
-                //Set the first node to start at the Y of this node...
-                node.childBlockObjects[i].posY = node.posY;
+                //Set the first node to start at the Y of this node and down a bit...
+                node.childBlockObjects[i].posY = node.posY + INTERNODE_SPACING;
             }
             
             //Have the node find its height and width...
@@ -161,31 +169,41 @@ function calculateNodeSizesAndPositions(node) {
                //Set the next child's height to start after this one...
                node.childBlockObjects[i+1].posY = node.childBlockObjects[i].posY + node.childBlockObjects[i].height + INTERNODE_SPACING;
            }
+           
+           //Coming up from the child, let's recalculate our own height...
+           node.height += node.childBlockObjects[i].height + INTERNODE_SPACING;
         }
     } else {
         //Base case, need to tell the parent how big we are..
-        node.width = 100;
-        node.height = 100;
+        //Calculate the width as the widest line in our content...
+        var max = 0;
+        for (var i = 0; i < node.content.length; i++) {
+            if (node.content[i].length > max) {
+                max = node.content[i].length;
+            }
+        }
+        
+        //multiply by width and height of the font...
+        node.width = max * FONT_SIZE;
+        
+        //Height is the number of lines...
+        node.height = node.content.length * FONT_SIZE;
     }    
     
 }
 
+/**
+ * The sizes of these nodes have already been calculated by calculateNodeSizesAndPositions(),
+ * so be sure to call thereWasANodeUpdate() whenever stuff changes!
+ * 
+ * @param {type} node
+ * @returns {undefined}
+ */
 function drawNodeRecurse(node) {
-    //draw the root node
-    //basically we can only easily calculate its height in advance - so make it
-    //as high as it should be by iterating...
-    
-    calculateNodeSizesAndPositions(node);
-    
-    //Draw the nodes with their calculated sizes...
-    //
-    //Calculate the height of this node!
-    
-    
+    //draw each node
     context.fillStyle = node.bgColor;
 
     context.beginPath();
-    //TODO: Calculate node position and size here
     context.rect(node.posX, node.posY, node.width, node.height);
     context.closePath();
     context.fill();
@@ -194,7 +212,6 @@ function drawNodeRecurse(node) {
     if (node.childBlockObjects != null) {
         for (var i = 0; i < node.childBlockObjects.length; i++) {
            drawNodeRecurse(node.childBlockObjects[i]);
-           //Since we drew the child, we know the new size of this block...
         }
     }
 }
@@ -207,6 +224,7 @@ this.repaint = repaint;
 this.paintBackground = paintBackground;
 this.initEverything = initEverything;
 this.setRootNode = setRootNode;
+this.thereWasANodeUpdate = thereWasANodeUpdate;
 
 }
 
