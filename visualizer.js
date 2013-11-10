@@ -237,45 +237,46 @@ function calculateNodeSizesAndPositions(node, level) {
 
 function colorLookup(type) {
     if (type === "if") {
-        return "#440000";
+        return "#571F1F";
     }
     if (type === "instructions") {
-        return "#777";
+        return "#6D7026";
     }
     if (type === "file") {
-        return "#333";
+        return "#101010";
     }
     if (type === "function") {
-        return "#733";
+        return "#612963";
     }
     if (type === "loop") {
-        return "#373";
+        return "#206620";
     }
     if (type === "object") {
-        return "#337";
+        return "#234466";
     }
-    return "#f00";
+    return "#d00";
 }
 
 
 function colorLookupMute(type) {
+    return '#292929';
     if (type === "if") {
-        return "#220000";
+        return "#A36C6C";
     }
     if (type === "instructions") {
-        return "#444";
+        return "#B0B382";
     }
     if (type === "file") {
-        return "#111";
+        return "#292828";
     }
     if (type === "function") {
-        return "#411";
+        return "#AC8CAD";
     }
     if (type === "loop") {
-        return "#141";
+        return "#699669";
     }
     if (type === "object") {
-        return "#114";
+        return "#91A7BD";
     }
     return "#d00";
 }
