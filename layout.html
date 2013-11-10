@@ -30,11 +30,14 @@
         <script src="js/rangy-cssclassapplier.js"></script> 
         <script src="js/rangy-selectionsaverestore.js"></script> 
         <script src="js/rangy-serializer.js"></script> 
-        <script src="js/syntaxHighlight.js"></script> 
+
 
 
         <div id="logoDiv">
-            <img id="logo" src="img/PS_Icon.svg" alt="Pseudocodr">
+            <img id="logo" src="img/PS_Icon.png" alt="Pseudocodr">
+            <input type="button" id="button" value="Open"/>
+            <input type="file"  id="files" style="opacity:0; float: right; position:relative; left:100px; height:100%; width:100px;"  onchange="javascript: document.getElementById('fileName').value = this.value"/>
+            <a id="saveButton" download="Pseudocodr.txt" href="#" onclick="save();">Save</a>
         </div>
         <div id="mainArea">
             <div id="border"></div>
@@ -49,6 +52,6 @@
         </div>
 
 
-
+        <script src="js/syntaxHighlight.js"></script> 
     </body>
 </html>
