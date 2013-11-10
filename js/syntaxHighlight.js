@@ -32,6 +32,7 @@ $(document).ready(function() {
             rangy.restoreSelection(sel);
         }
 
+
     });
 
     function processFile(e) {
@@ -84,6 +85,18 @@ $(document).ready(function() {
         $(this).attr("contentEditable", true);
     });
 
+    $('#textInput').keydown(function(e) {
+        //change tab to 4 spaces
+        if (e.keyCode == 9) {
+            var sel = rangy.saveSelection();
+            insertTextAtCursor('    ');
+            rangy.restoreSelection(sel);
+            if (e.preventDefault) {
+                e.preventDefault()
+            }
+        }
+
+    });
 });
 
 
