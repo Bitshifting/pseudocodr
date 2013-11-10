@@ -61,10 +61,32 @@ html, body {
 
 }
 
-.Derp {
-    color: red;
+.object {
+    font-weight: bold;
+    color: #FF6700;
 }
 
-.Herp {
-    color: black;
+.if {
+    font-weight: bold;
+    color: #00A480;
+}
+
+.elseif {
+    font-weight: bold;
+    color: #00A480;
+}
+
+.else {
+    font-weight: bold;
+    color: #00A480;
+}
+
+.while {
+    font-weight: bold;
+    color: #4380D3;
+}
+
+.end {
+    font-weight: bold;
+    color: #B90091;
 }
