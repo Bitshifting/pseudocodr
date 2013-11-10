@@ -1,3 +1,4 @@
+function visualizerObject() {
 //Name of the canvas element in our HTML markup.
 var canvasName = 'mainCanvas';
 
@@ -13,6 +14,13 @@ var mouseX = 0, mouseY = 0;
 
 //Setup yet?
 var inited = false;
+
+//The root node that we'll be drawing from.
+var rootN;
+
+//X and Y offsets for dragging...
+var xOff = 0;
+var yOff = 0;
 
 /**
  * Creates the canvas context and assigns it to the 'global' variable context.
@@ -66,6 +74,11 @@ function repaint() {
     paintBackground();
 
     //Draw logic here...
+    if (rootN != null) {
+        rootN.posX = 0;
+        rootN.posY = 0;
+        drawNodeRecurse(rootN);
+    }
 }
 
 /**
@@ -100,3 +113,101 @@ function updateMousePosition(event) {
 function mouseClicked() {
 
 }
+
+/**
+ * Sets the root node and recursively draws its children...
+ * @returns {undefined}
+ */
+function setRootNode(rootnode) {
+    rootN = rootnode;
+    thereWasANodeUpdate();
+}
+
+/**
+ * Call when you change a node so the entire tree is redrawn starting from the
+ * root node...
+ * @returns {undefined}
+ */
+function thereWasANodeUpdate() {
+    //rewdraw everything!
+    repaint();
+}
+
+var CHILD_INDENT = 24;
+var INTERNODE_SPACING = 12;
+
+function calculateNodeSizesAndPositions(node) {
+    /*
+     * philosophy: starting from the root, we don't know how big the container
+     * has to be. traverse its children until hitting a node with no children
+     * and calculate back up the sizes by setting them
+     */
+    
+    if (node.childBlockObjects != null) {
+        for (var i = 0; i < node.childBlockObjects.length; i++) {
+            //We know that the child will have to be indented from the parent.
+            node.childBlockObjects[i].posX = node.posX + CHILD_INDENT;
+            
+            if (i === 0) {
+                //Set the first node to start at the Y of this node...
+                node.childBlockObjects[i].posY = node.posY;
+            }
+            
+            //Have the node find its height and width...
+            calculateNodeSizesAndPositions(node.childBlockObjects[i]);
+           
+           
+           if (i + 1 < node.childBlockObjects.length) {
+               //Set the next child's height to start after this one...
+               node.childBlockObjects[i+1].posY = node.childBlockObjects[i].posY + node.childBlockObjects[i].height + INTERNODE_SPACING;
+           }
+        }
+    } else {
+        //Base case, need to tell the parent how big we are..
+        node.width = 100;
+        node.height = 100;
+    }    
+    
+}
+
+function drawNodeRecurse(node) {
+    //draw the root node
+    //basically we can only easily calculate its height in advance - so make it
+    //as high as it should be by iterating...
+    
+    calculateNodeSizesAndPositions(node);
+    
+    //Draw the nodes with their calculated sizes...
+    //
+    //Calculate the height of this node!
+    
+    
+    context.fillStyle = node.bgColor;
+
+    context.beginPath();
+    //TODO: Calculate node position and size here
+    context.rect(node.posX, node.posY, node.width, node.height);
+    context.closePath();
+    context.fill();
+    
+    //and all of its children inside
+    if (node.childBlockObjects != null) {
+        for (var i = 0; i < node.childBlockObjects.length; i++) {
+           drawNodeRecurse(node.childBlockObjects[i]);
+           //Since we drew the child, we know the new size of this block...
+        }
+    }
+}
+
+
+//Object function prototyping.
+this.mouseClicked = mouseClicked;
+this.updateMousePosition = updateMousePosition;
+this.repaint = repaint;
+this.paintBackground = paintBackground;
+this.initEverything = initEverything;
+this.setRootNode = setRootNode;
+
+}
+
+var visualizer = new visualizerObject();

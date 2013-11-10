@@ -20,16 +20,31 @@
         <!--[if lt IE 7]>
             <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
         <![endif]-->
+        
+        <script src='blockdatas.js'></script>
         <script src='visualizer.js'></script>
+        
         <!-- Add your site or application content here -->
         <div style="text-align:center;">
             <canvas id="mainCanvas" width="1080" height="675"
-                    onmousemove="updateMousePosition(event)"
-                    onclick="mouseClicked()">
+                    onmousemove="visualizer.updateMousePosition(event);"
+                    onclick="visualizer.mouseClicked();">
                 Your browser doesn't support HTML5. Upgrade to something better.
             </canvas>
         </div>
-        <script>initEverything()</script>
+        
+        <script>
+            //Create test root node...
+            var test = new blockObject("Test title", "Test content blah blah blah", "#440000", []);
+            
+            visualizer.initEverything();
+            visualizer.setRootNode(test);
+            test.childBlockObjects.push(new blockObject("Test child 1", "test child content 1", "#004400"));
+            test.childBlockObjects.push(new blockObject("Test child 2", "test child content 2", "#004444"));
+            test.childBlockObjects.push(new blockObject("Test child 3", "test child content 3", "#000044"));
+            test.childBlockObjects.push(new blockObject("Test child 4", "test child content 4", "#440044"));
+            
+        </script>
         
         
         <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
