@@ -44,6 +44,7 @@
         <script>
             //TEST DATA!
             //This represents the following pseudocode:
+            //
             // doTheThing()
             // doTheOtherThing()
             // 
@@ -68,13 +69,27 @@
             // object human
             //      var localVariable = 123
             //      function doWork
-            //          doItInTheMorning
-            //          doItInTheEvening
-            //          doItAtNight
-            //          doItInTheShower
-            //          doItRightNow
-            //          breathe
+            //          doItInTheMorning()
+            //          doItInTheEvening()
+            //          doItAtNight()
+            //          doItInTheShower()
+            //          doItRightNow()
+            //          breathe()
             //      end
+            //      
+            //      doSomeHumanLogic()
+            //      moreHumanLogic()
+            //      superDuperHumanLogic()
+            //      
+            //      if thingsAreBeautiful
+            //          celebrate()
+            //          if thingsAreStillBeautiful
+            //              keepCelebrating()
+            //          end
+            //      else
+            //          cry()
+            //      end
+            //          
             // end
             
             
@@ -90,9 +105,22 @@
                 
             ])); //End of if statement
             
+            test.childBlockObjects.push(new blockObject("While alive", [], "loop", [
+                new blockObject("Instructions", ["liveYourLife()"], "instructions", [])
+            ]));
+            
             test.childBlockObjects.push(new blockObject("Instructions", ["var thing1 = 1", "var thing2 = 2"], "instructions", []));
             test.childBlockObjects.push(new blockObject("human", ["var localVariable = 123"], "object", [
-                new blockObject("DoWork()", ["doItInTheMorning", "doItInTheEvening", "doItAtNight", "doItInTheShower", "doItRightNow", "breathe"], "function", [])
+                new blockObject("DoWork()", ["doItInTheMorning()", "doItInTheEvening()", "doItAtNight()", "doItInTheShower()", "doItRightNow()", "breathe()"], "function", []),
+                new blockObject("Instructions", ["doSomeHumanLogic()", "moreHumanLogic()", "superDuperHumanLogic()"], "instructions", []),
+                new blockObject("If Statement", ["thingsAreBeautiful", "else"], "if" , [
+                    new blockObject("Instructions", ["celebrate"], "instructions", [
+                    new blockObject("If Statement", ["thingsAreStillBeautiful"], "if", [
+                        new blockObject("Instructions", ["keepCelebrating"], "instructions", [])
+                        ])
+                    ]),
+                    new blockObject("Instructions", ["cry()"], "instructions", [])
+                ])
             ]));
 
             
@@ -105,15 +133,5 @@
         <script>window.jQuery || document.write('<script src="js/vendor/jquery-1.10.2.min.js"><\/script>')</script>
         <script src="js/plugins.js"></script>
         <script src="js/main.js"></script>
-
-        <!-- Google Analytics: change UA-XXXXX-X to be your site's ID. -->
-        <script>
-            (function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=
-            function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;
-            e=o.createElement(i);r=o.getElementsByTagName(i)[0];
-            e.src='//www.google-analytics.com/analytics.js';
-            r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));
-            ga('create','UA-XXXXX-X');ga('send','pageview');
-        </script>
     </body>
 </html>

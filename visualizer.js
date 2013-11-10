@@ -329,7 +329,7 @@ function drawNodeRecurse(node, arrowToNextNode) {
     if (node.childBlockObjects != null) {
         for (var i = 0; i < node.childBlockObjects.length; i++) {
             if (i + 1 < node.childBlockObjects.length) {
-           drawNodeRecurse(node.childBlockObjects[i], (node.statementType == "if" ? false : isExecutableBlock(node.childBlockObjects[i+1])));
+           drawNodeRecurse(node.childBlockObjects[i], (node.statementType == "if" ? false : isExecutableBlock(node.childBlockObjects[i]) && isExecutableBlock(node.childBlockObjects[i+1])));
             } else
                 {
                     //No chance of an arrow..
@@ -341,6 +341,7 @@ function drawNodeRecurse(node, arrowToNextNode) {
 
 
 var dragX, dragY;
+var dragging = false;
 
 function dragBegin() {
     dragX = mouseX;
