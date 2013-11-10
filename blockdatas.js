@@ -1,6 +1,7 @@
-function blockObject(title, content, statementType, childBlockObjects) {
+function blockObject(title, content, statementType, childBlockObjects, parent) {
     this.title = title;
     this.statementType = statementType;
+    this.parent = parent;
     
     ///Satement type can be many things, like a function or an if statement...
     

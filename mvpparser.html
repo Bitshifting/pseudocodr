@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title></title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
+
+        <link rel="stylesheet" href="css/normalize.css">
+        <link rel="stylesheet" href="css/main.css">
+        <script src="js/vendor/modernizr-2.6.2.min.js"></script>
+    </head>
+    <body>
+        <!--[if lt IE 7]>
+            <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+        <![endif]-->
+        
+        <!-- Add your site or application content here -->        
+        <script src='blockdatas.js'></script>
+        <script src='visualizer.js'></script>
+        
+        <div>
+            <p>Pseudocodr</p>   
+        </div>
+        <div style="height:100%">
+            <canvas id="mainCanvas"
+                    width="800" height="1200"
+                    onmousemove="visualizer.updateMousePosition(event); visualizer.dragUpdate();"
+                    onclick="visualizer.mouseClicked();"
+                    onmousedown="visualizer.dragBegin();"
+                    onmouseup="visualizer.dragEnd();"
+                    
+                    >
+                Your browser doesn't support HTML5. Upgrade to something better.
+            </canvas>
+        </div>
+        <div style="float:right">
+            <textarea id="putcode">Type code here...</textarea>
+            <a href="#" onclick="reparse(); return false;">PARSE</a>
+            
+        </div>
+        
+        <script>
+            visualizer.initEverything();
+            
+        function reparse() {
+            //LINE
+            //BY LINE
+            var curNode = new blockObject("Pseudocode", [], "file", []);
+            curNode.parent = curNode;
+            
+            var lines = $('#putcode').val().split('\n');
+            
+            for (var i =0 ; i < lines.length; i ++) {
+                if (lines[i].length == 0) 
+                    continue;
+                lines[i] = lines[i].trim();
+                //For every line do some parsing...
+                if ((/^if /).test(lines[i])) {
+                    //it's an if statement...
+                    curNode = curNode.parent;
+                    var tmp = new blockObject("If...", [], "if", [], curNode);
+                    curNode.childBlockObjects.push(tmp);
+                    curNode = tmp;
+                    
+                    //add the first condition as a child of it...
+                    
+                            
+                    var tmp2 = new blockObject(lines[i].substr(3), [], "instructions", [], curNode);
+                    curNode.childBlockObjects.push(tmp2);
+                    curNode = tmp2;
+                } else if ((/^elseif /).test(lines[i])) {
+                    curNode = curNode.parent;
+                    var tmp = new blockObject(lines[i].substr(7), [], "instructions", [], curNode);
+                    curNode.childBlockObjects.push(tmp);
+                    curNode = tmp;
+                } else if ((/^else/).test(lines[i])) {
+                    curNode = curNode.parent;
+                    var tmp = new blockObject("else", [], "instructions", [], curNode);
+                    curNode.childBlockObjects.push(tmp);
+                    curNode = tmp;
+                } else if ((/^end/).test(lines[i])) {
+                    //Up a level!
+                    if (curNode.statementType == "instructions") {
+                        curNode = curNode.parent.parent;
+                    }else {
+                    curNode = curNode.parent;
+                    }                   
+                } else if ((/^while /).test(lines[i])) {
+                    curNode = curNode.parent;
+                    var tmp = new blockObject("While " + lines[i].substr(6), [], "loop", [], curNode);
+                    curNode.childBlockObjects.push(tmp);
+                    curNode = tmp;
+                } else if ((/^function /).test(lines[i])) {
+                  curNode = curNode.parent;
+                    var tmp = new blockObject(lines[i].substr(9), [], "function", [], curNode);
+                    curNode.childBlockObjects.push(tmp);
+                    curNode = tmp;
+                } else if ((/^object /).test(lines[i])) {
+                    curNode = curNode.parent;
+                    var tmp = new blockObject(lines[i].substr(7), [], "object", [], curNode);
+                    curNode.childBlockObjects.push(tmp);
+                    curNode = tmp;
+                } else {
+                    //It's an instruction, check if the current is an instruction
+                    //block otherwise add an instruction block as a child of the
+                    //current.
+                    if (curNode.statementType == "instructions") {
+                        curNode.content.push(lines[i]);
+                    } else {
+                        var tmp = new blockObject("Instructions", [lines[i]], "instructions", [], curNode);
+                        curNode.childBlockObjects.push(tmp);
+                        curNode = tmp;
+                    }
+                }
+                
+                
+            }
+            curNode = curNode.parent;
+            alert(curNode.title);
+            visualizer.setRootNode(curNode);
+            visualizer.thereWasANodeUpdate();
+        }
+        </script>
+        
+        
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+        <script>window.jQuery || document.write('<script src="js/vendor/jquery-1.10.2.min.js"><\/script>')</script>
+        <script src="js/plugins.js"></script>
+        <script src="js/main.js"></script>
+    </body>
+</html>
