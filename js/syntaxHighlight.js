@@ -83,6 +83,7 @@ $(document).ready(function() {
 
     $("#textInput").on("click", function() {
         $(this).attr("contentEditable", true);
+        $(this).focus();
     });
 
     $('#textInput').keydown(function(e) {
